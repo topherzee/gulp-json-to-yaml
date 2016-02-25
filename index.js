@@ -6,47 +6,19 @@ var yaml          = require('js-yaml');
 var xtend         = require('xtend');
 var BufferStreams = require('bufferstreams');
 var PluginError   = gutil.PluginError;
-var PLUGIN_NAME   = 'gulp-yaml';
+var PLUGIN_NAME   = 'gulp-json-to-yaml';
 
 
-function yaml2json(buffer, options) {
+function json2yaml(buffer, options) {
   var contents = buffer.toString('utf8');
-  var ymlOptions = {schema: options.schema, filename: options.filename};
-  var ymlDocument = options.safe ? yaml.safeLoad(contents, ymlOptions) : yaml.load(contents, ymlOptions);
-  return new Buffer(JSON.stringify(ymlDocument, options.replacer, options.space));
-}
-
-function parseSchema(schema) {
-  switch (schema) {
-    case 'DEFAULT_SAFE_SCHEMA':
-    case 'default_safe_schema':
-      return yaml.DEFAULT_SAFE_SCHEMA;
-    case 'DEFAULT_FULL_SCHEMA':
-    case 'default_full_schema':
-      return yaml.DEFAULT_FULL_SCHEMA;
-    case 'CORE_SCHEMA':
-    case 'core_schema':
-      return yaml.CORE_SCHEMA;
-    case 'JSON_SCHEMA':
-    case 'json_schema':
-      return yaml.JSON_SCHEMA;
-    case 'FAILSAFE_SCHEMA':
-    case 'failsafe_schema':
-      return yaml.FAILSAFE_SCHEMA;
-  }
-  throw new PluginError(PLUGIN_NAME, 'Schema ' + schema + ' is not valid');
+  var src = JSON.parse(contents);
+  var ymlDocument = options.safe ? yaml.safeDump(src, options) : yaml.dump(src, options);
+  return new Buffer(ymlDocument);
 }
 
 module.exports = function(options) {
   options = xtend({safe: true, replacer: null, space: null}, options);
   var providedFilename = options.filename;
-
-  if (!options.schema) {
-    options.schema = options.safe ? yaml.DEFAULT_SAFE_SCHEMA : yaml.DEFAULT_FULL_SCHEMA;
-  }
-  else {
-      options.schema = parseSchema(options.schema);
-  }
 
   return through.obj(function(file, enc, callback) {
     if (!providedFilename) {
@@ -56,12 +28,12 @@ module.exports = function(options) {
     if (file.isBuffer()) {
       if (file.contents.length === 0) {
         this.emit('error', new PluginError(PLUGIN_NAME, 'File ' + file.path +
-            ' is empty. YAML loader cannot load empty content'));
+            ' is empty. JSON loader cannot load empty content'));
         return callback();
       }
       try {
-        file.contents = yaml2json(file.contents, options);
-        file.path = gutil.replaceExtension(file.path, '.json');
+        file.contents = json2yaml(file.contents, options);
+        file.path = gutil.replaceExtension(file.path, '.yaml');
       }
       catch (error) {
         this.emit('error', new PluginError(PLUGIN_NAME, error, {showStack: true}));
@@ -77,12 +49,12 @@ module.exports = function(options) {
         else {
           if (buf.length === 0) {
             _this.emit('error', new PluginError(PLUGIN_NAME, 'File ' + file.path +
-                ' is empty. YAML loader cannot load empty content'));
+                ' is empty. JSON loader cannot load empty content'));
           }
           else {
             try {
-              var parsed = yaml2json(buf, options);
-              file.path = gutil.replaceExtension(file.path, '.json');
+              var parsed = json2yaml(buf, options);
+              file.path = gutil.replaceExtension(file.path, '.yaml');
               cb(null, parsed);
             }
             catch (error) {

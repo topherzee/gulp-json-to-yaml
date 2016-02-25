@@ -1,14 +1,13 @@
 {
-  "name": "gulp-yaml",
+  "name": "gulp-json-to-yaml",
   "version": "1.0.1",
-  "description": "Convert YAML to JSON",
+  "description": "Convert JSON to YAML",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "echo \"No test specified\" && exit 1"
   },
   "files": [
-    "index.js",
-    "CHANGELOG.md"
+    "index.js"
   ],
   "engines": {
     "node": ">=0.10.0"
@@ -24,18 +23,21 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/crissdev/gulp-yaml.git"
+    "url": "https://github.com/topherzee/gulp-json-to-yaml.git"
   },
-  "homepage": "https://github.com/crissdev/gulp-yaml",
+  "homepage": "https://github.com/topherzee/gulp-json-to-yaml",
   "author": {
+    "name": "Christopher Zimmermann",
+    "email": "topher@dandelion.org"
+  },
+  "based-on-work-by-author": {
     "name": "Cristian Trifan",
     "email": "criss.trifan@gmail.com",
     "url": "http://crissdev.com"
   },
   "license": "MIT",
   "devDependencies": {
-    "event-stream": "^3.3.2",
-    "mocha": "^2.2.5"
+
   },
   "dependencies": {
     "bufferstreams": "1.1.0",
