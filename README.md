@@ -19,7 +19,7 @@ gulp.src('./src/*.json')
   .pipe(gulp.dest('./dist/'))
 
 gulp.src('./src/*.json')
-  .pipe(jsonToYaml( safe: true}))
+  .pipe(jsonToYaml({ safe: true}))
   .pipe(gulp.dest('./dist/'))
 
 ```
@@ -44,16 +44,6 @@ Enable or disable support for regexps, functions and undefined.
 When this flag is enabled then [safeDump] method is used, otherwise [dump].
 The options object is passed on to js-yaml methods.
 See [js-yaml for details](https://github.com/nodeca/js-yaml)
-
-
-#### options.space
-
-Type: `Number` or `String`
-
-Default: `null`
-
-Control spacing in the resulting output. It has the same usage as for [JSON.stringify](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
-
 
 #### options.filename
 
